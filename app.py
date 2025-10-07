@@ -165,19 +165,23 @@ def help_text():
 # ===== Rotas =====
 @app.post("/whatsapp")
 def whatsapp_webhook():
-    from_phone = request.form.get("From")      # 'whatsapp:+55...'
+    from_phone = request.form.get("From")
     body = (request.form.get("Body") or "").strip().lower()
-    if not from_phone: abort(400)
+    if not from_phone:
+        abort(400)
 
     d = today_sp()
     resp = MessagingResponse()
-    msg = resp.message
+    msg = resp.message()  # <<<<<<<<<<<<<<<<<<<<<<  CORREÇÃO
 
     if body.startswith("km inicio"):
         vals = parse_nums(body)
-        if not vals: msg.body("Use: km inicio 32000"); return str(resp)
+        if not vals:
+            msg.body("Use: km inicio 32000"); return str(resp)
         upsert_day(from_phone, d, km_start=vals[0])
         msg.body(f"✅ KM inicial salvo: {vals[0]:.0f}"); return str(resp)
+
+    # ... (restante da função igual)
 
     if body.startswith("km final"):
         vals = parse_nums(body)
