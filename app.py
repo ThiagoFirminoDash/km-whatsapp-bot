@@ -236,3 +236,7 @@ def cron_send_daily():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+
+@app.route("/healthz")
+def health_check():
+    return "ok", 200
